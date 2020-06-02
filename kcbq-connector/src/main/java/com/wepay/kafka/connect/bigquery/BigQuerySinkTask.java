@@ -93,6 +93,7 @@ public class BigQuerySinkTask extends SinkTask {
   private boolean upsertDelete;
   private MergeBatches mergeBatches;
   private MergeQueries mergeQueries;
+  private volatile boolean stopped;
 
   private TopicPartitionManager topicPartitionManager;
 
@@ -137,6 +138,11 @@ public class BigQuerySinkTask extends SinkTask {
     if (upsertDelete) {
       throw new ConnectException("This connector cannot perform upsert/delete on older versions of "
           + "the Connect framework; please upgrade to version 0.10.2.0 or later");
+    }
+
+    // Return immediately here since the executor will already be shutdown
+    if (stopped) {
+      return;
     }
 
     try {
@@ -382,6 +388,8 @@ public class BigQuerySinkTask extends SinkTask {
   @Override
   public void start(Map<String, String> properties) {
     logger.trace("task.start()");
+    stopped = false;
+
     final boolean hasGCSBQTask =
         properties.remove(BigQuerySinkConnector.GCS_BQ_TASK_CONFIG_KEY) != null;
     try {

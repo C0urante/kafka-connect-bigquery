@@ -21,7 +21,6 @@ package com.wepay.kafka.connect.bigquery;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Mockito.mock;
@@ -38,6 +37,9 @@ import com.google.cloud.bigquery.InsertAllResponse;
 import com.google.cloud.bigquery.Table;
 import com.google.cloud.bigquery.LegacySQLTypeName;
 import com.google.cloud.bigquery.QueryJobConfiguration;
+import com.google.cloud.bigquery.LegacySQLTypeName;
+import com.google.cloud.bigquery.QueryJobConfiguration;
+import com.google.cloud.bigquery.TableId;
 import com.google.cloud.storage.Storage;
 
 import com.wepay.kafka.connect.bigquery.api.KafkaSchemaRecordType;
@@ -337,6 +339,9 @@ public class BigQuerySinkTaskTest {
         TimestampType.NO_TIMESTAMP_TYPE, null)));
   }
 
+  // It's important that the buffer be completely wiped after a call to flush, since any exception
+  // thrown during flush causes Kafka Connect to not commit the offsets for any records sent to the
+  // task since the last flush
   @Test
   public void testPutWithUpsertDelete() throws Exception {
     final String topic = "test-topic";

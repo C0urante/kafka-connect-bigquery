@@ -1,4 +1,4 @@
-package com.wepay.kafka.connect.bigquery.it.utils;
+package com.wepay.kafka.connect.bigquery.integration.utils;
 
 /*
  * Copyright 2016 WePay, Inc.
@@ -19,42 +19,29 @@ package com.wepay.kafka.connect.bigquery.it.utils;
 
 
 import com.google.cloud.bigquery.BigQuery;
-
-import com.wepay.kafka.connect.bigquery.BigQueryHelper;
-
+import com.google.cloud.bigquery.TableId;
 import com.wepay.kafka.connect.bigquery.utils.FieldNameSanitizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collection;
+
+import static com.wepay.kafka.connect.bigquery.utils.TableNameUtils.table;
+
 public class TableClearer {
   private static final Logger logger = LoggerFactory.getLogger(TableClearer.class);
 
-  /**
-   * Clears tables in the given project and dataset, using a provided JSON service account key.
-   */
-  public static void main(String[] args) {
-    if (args.length < 4) {
-      usage();
-    }
-    int tablesStart = 3;
-    BigQuery bigQuery = new BigQueryHelper().connect(args[1], args[0]);
-    for (int i = tablesStart; i < args.length; i++) {
+  public static void clearTables(BigQuery bigQuery, String dataset, Collection<String> tables) {
+    for (String tableName : tables) {
       // May be consider using sanitizeTopics property value in future to decide table name
       // sanitization but as currently we always run test cases with sanitizeTopics value as true
       // hence sanitize table name prior delete. This is required else it makes test cases flaky.
-      String table = FieldNameSanitizer.sanitizeName(args[i]);
-      if (bigQuery.delete(args[2], table)) {
-        logger.info("Table {} in dataset {} deleted successfully", table, args[2]);
+      TableId table = TableId.of(dataset, FieldNameSanitizer.sanitizeName(tableName));
+      if (bigQuery.delete(table)) {
+        logger.info("{} deleted successfully", table(table));
       } else {
-        logger.info("Table {} in dataset {} does not exist", table, args[2]);
+        logger.info("{} does not exist", table(table));
       }
     }
-  }
-
-  private static void usage() {
-    System.err.println(
-        "usage: TableClearer <key_file> <project_name> <dataset_name> <table> [<table> ...]"
-    );
-    System.exit(1);
   }
 }

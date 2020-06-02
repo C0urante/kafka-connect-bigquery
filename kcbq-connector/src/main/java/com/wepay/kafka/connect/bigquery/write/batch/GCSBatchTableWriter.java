@@ -40,7 +40,6 @@ import java.util.TreeMap;
  * and then triggers a load job from that GCS file to BigQuery.
  */
 public class GCSBatchTableWriter implements Runnable {
-  private static final Logger logger = LoggerFactory.getLogger(GCSBatchTableWriter.class);
 
   private final TableId tableId;
 

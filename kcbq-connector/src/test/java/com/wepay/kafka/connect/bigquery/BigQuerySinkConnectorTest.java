@@ -56,24 +56,6 @@ import java.util.Map;
 public class BigQuerySinkConnectorTest {
   private static SinkConnectorPropertiesFactory propertiesFactory;
 
-  // Would just use Mockito, but can't provide the name of an anonymous class to the config file
-  public static class MockSchemaRetriever implements SchemaRetriever {
-    @Override
-    public void configure(Map<String, String> properties) {
-      // Shouldn't be called
-    }
-
-    @Override
-    public Schema retrieveKeySchema(SinkRecord record){
-      return null;
-    }
-
-    @Override
-    public Schema retrieveValueSchema(SinkRecord record){
-      return null;
-    }
-  }
-
   @BeforeClass
   public static void initializePropertiesFactory() {
     propertiesFactory = new SinkConnectorPropertiesFactory();
@@ -88,13 +70,7 @@ public class BigQuerySinkConnectorTest {
   public void testTaskConfigs() {
     Map<String, String> properties = propertiesFactory.getProperties();
 
-    Table fakeTable = mock(Table.class);
-
-    BigQuery bigQuery = mock(BigQuery.class);
-    when(bigQuery.getTable(any(TableId.class))).thenReturn(fakeTable);
-
-    SchemaManager schemaManager = mock(SchemaManager.class);
-    BigQuerySinkConnector testConnector = new BigQuerySinkConnector(bigQuery, schemaManager);
+    BigQuerySinkConnector testConnector = new BigQuerySinkConnector();
 
     testConnector.start(properties);
 

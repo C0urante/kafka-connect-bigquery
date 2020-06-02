@@ -33,27 +33,20 @@ import org.apache.kafka.common.config.ConfigDef;
 import org.apache.kafka.common.config.ConfigException;
 
 import org.apache.kafka.connect.sink.SinkConnector;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
-import java.util.AbstractMap;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.Optional;
 
 /**
  * Base class for connector and task configs; contains properties shared between the two of them.
  */
 public class BigQuerySinkConfig extends AbstractConfig {
+
   // Values taken from https://github.com/apache/kafka/blob/1.1.1/connect/runtime/src/main/java/org/apache/kafka/connect/runtime/SinkConnectorConfig.java#L33
   public static final String TOPICS_CONFIG =                     SinkConnector.TOPICS_CONFIG;
   private static final ConfigDef.Type TOPICS_TYPE =              ConfigDef.Type.LIST;
@@ -104,7 +97,7 @@ public class BigQuerySinkConfig extends AbstractConfig {
 
   public static final String GCS_FOLDER_NAME_CONFIG =                     "gcsFolderName";
   private static final ConfigDef.Type GCS_FOLDER_NAME_TYPE =              ConfigDef.Type.STRING;
-  private static final Object GCS_FOLDER_NAME_DEFAULT =                   "";
+  public static final String GCS_FOLDER_NAME_DEFAULT =                   "";
   private static final ConfigDef.Importance GCS_FOLDER_NAME_IMPORTANCE =  ConfigDef.Importance.MEDIUM;
   private static final String GCS_FOLDER_NAME_DOC =
           "The name of the folder under the bucket in which gcs blobs used to batch load to BigQuery "

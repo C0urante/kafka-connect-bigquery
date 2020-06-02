@@ -22,6 +22,7 @@ import com.google.cloud.bigquery.BigQuery;
 import com.wepay.kafka.connect.bigquery.config.BigQuerySinkConfig;
 
 import com.wepay.kafka.connect.bigquery.config.BigQuerySinkTaskConfig;
+
 import com.wepay.kafka.connect.bigquery.exception.SinkConfigConnectException;
 
 import com.wepay.kafka.connect.bigquery.utils.Version;
@@ -45,27 +46,8 @@ import java.util.Map;
  * {@link org.apache.kafka.connect.sink.SinkTask SinkTasks}.
  */
 public class BigQuerySinkConnector extends SinkConnector {
-  private final BigQuery testBigQuery;
-  private final SchemaManager testSchemaManager;
 
   public static final String  GCS_BQ_TASK_CONFIG_KEY = "GCSBQTask";
-
-  public BigQuerySinkConnector() {
-    testBigQuery = null;
-    testSchemaManager = null;
-  }
-
-  // For testing purposes only; will never be called by the Kafka Connect framework
-  BigQuerySinkConnector(BigQuery bigQuery) {
-    this.testBigQuery = bigQuery;
-    this.testSchemaManager = null;
-  }
-
-  // For testing purposes only; will never be called by the Kafka Connect framework
-  BigQuerySinkConnector(BigQuery bigQuery, SchemaManager schemaManager) {
-    this.testBigQuery = bigQuery;
-    this.testSchemaManager = schemaManager;
-  }
 
   private BigQuerySinkConfig config;
   private Map<String, String> configProperties;
